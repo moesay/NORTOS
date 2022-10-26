@@ -10,11 +10,7 @@
 #define BLUE  (1 << 2)
 
 uint32_t redLEDStack[32], greenLEDStack[32], blueLEDStack[32], idleStack[32];
-NORTOS_Task redLEDTask, greenLEDTask, blueLEDTask, idleTask;
-
-void idle() {
-    while(true);
-}
+NORTOS_Task redLEDTask, greenLEDTask, blueLEDTask;
 
 void redLED() {
     while(1) {
@@ -47,7 +43,7 @@ int main(void) {
     SystemCoreClockUpdate();
     OnStartup();
 
-    NORTOS_Init(&idleTask, idle, idleStack, sizeof(idleStack));
+    NORTOS_Init(idleStack, sizeof(idleStack));
     NORTOS_AddTask(&greenLEDTask, greenLED, greenLEDStack, sizeof(greenLEDStack), 2);
     NORTOS_AddTask(&redLEDTask, redLED, redLEDStack, sizeof(redLEDStack), 3);
     NORTOS_AddTask(&blueLEDTask, blueLED, blueLEDStack, sizeof(blueLEDStack), 10);
