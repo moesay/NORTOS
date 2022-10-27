@@ -12,8 +12,8 @@ NORTOS_Task *__taskArr [MAX_TASKS+1];
 uint16_t __tasksCount = 0U;
 NORTOS_Task *volatile __currentTask, *volatile __nextTask;
 bool __init = false;
-volatile uint32_t __readyTasksBM = 0U;
-volatile uint32_t __blockedTasksBM = 0U;
+uint32_t __readyTasksBM = 0U;
+uint32_t __blockedTasksBM = 0U;
 
 void idle() {
     while(1);

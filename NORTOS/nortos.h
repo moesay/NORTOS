@@ -21,7 +21,7 @@
 
 typedef struct {
     void *sp;
-    volatile uint16_t delay;
+    uint16_t delay;
     uint16_t priority;
 } NORTOS_Task;
 
