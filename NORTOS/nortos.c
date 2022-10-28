@@ -8,18 +8,14 @@
 #include "nortos.h"
 #define MAX_TASKS 15
 
-NORTOS_Task *__taskArr [MAX_TASKS+1];
-uint16_t __tasksCount = 0U;
-NORTOS_Task *volatile __currentTask, *volatile __nextTask;
+NORTOS_Task *__taskArr [MAX_TASKS+1], __idleTask, *volatile __currentTask, *volatile __nextTask;
 bool __init = false;
-uint32_t __readyTasksBM = 0U;
-uint32_t __blockedTasksBM = 0U;
+uint16_t __tasksCount = 0U;
+uint32_t __readyTasksBM = 0U, __blockedTasksBM = 0U;
 
 void idle() {
     while(1);
 }
-
-NORTOS_Task __idleTask;
 
 void NORTOS_AddTask(NORTOS_Task* taskFrame, NORTOS_TaskHwnd hwnd, void* stack, uint16_t _stackSize, uint16_t priority) {
     OSASSERT((priority <= MAX_TASKS));
@@ -106,8 +102,8 @@ __attribute__ ((naked)) void PendSV_Handler(void) {
 
 void NORTOS_Delay(uint16_t delay) {
     __asm ("cpsid i");
-    __readyTasksBM &= (uint32_t)~(1 << __currentTask->priority);
-    __blockedTasksBM |=  (uint32_t)(1 << __currentTask->priority);
+    __readyTasksBM &= ~(1 << __currentTask->priority);
+    __blockedTasksBM |= (1 << __currentTask->priority);
 
     OSASSERT((__readyTasksBM & (1 << MAX_TASKS)))
 
@@ -124,8 +120,8 @@ void SysTick_Handler() {
         task->delay --;
 
         if(task->delay == 0) {
-            __readyTasksBM |= (uint32_t)(1 << task->priority);
-            __blockedTasksBM &= (uint32_t)~(1 << task->priority);
+            __readyTasksBM |= (1 << task->priority);
+            __blockedTasksBM &= ~(1 << task->priority);
         }
 
         temp &= ~(1 << task->priority);
