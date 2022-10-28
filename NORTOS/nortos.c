@@ -152,9 +152,8 @@ __attribute__ ((naked, noreturn)) void OSAssertFailed(char const *file, int line
 
 __attribute__ ((naked)) uint8_t __getHPTask(uint32_t param) {
     __asm volatile (
-            "MOV   r1, r0                   \n"
-            "RBIT  r2, r1                   \n"
-            "CLZ   r0, r2                   \n"
+            "RBIT  r1, r0                   \n"
+            "CLZ   r0, r1                   \n"
             "BX lr                          \n"
             );
 }
